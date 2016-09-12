@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html ng-app="weatherApp">
 	<head>
 		<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -18,18 +18,32 @@
 			
 			<div class="container" ng-controller="weatherController">
 				<div class="row" align="center">
-					<div class="form-group">
-						<input style="width: 400px; text-align: center;" class="form-control" placeholder="Enter city..." ng-model="name" list="list_cities">
-					</div>
-
+					<form name="myForm">
+						<div class="form-group">
+							<input style="width: 400px; text-align: center;" class="form-control" placeholder="Enter city..." ng-model="name" list="list_cities">
+						</div>
+						<div class="form-group">
+								<label class="radio-inline"><input name="weathertype" type="radio" ng-model="weatherType" value="current">Current weather</label>
+								<label class="radio-inline"><input name="weathertype" type="radio" ng-model="weatherType" value="forecast">Weather forecast</label>
+					   </div>
+				   </form>
 				</div>
 				
 				<div class="row" style="text-align: center; margin-bottom: 20px;">
-						<button class="btn btn-lg btn-success" ng-click="getCurrentWeather(name)">Get the weather forecast</button>
+						<button class="btn btn-lg btn-success" ng-click="getWeather(name, weatherType)">Get the weather forecast</button>
 				</div>
 				
-				<div class="row" style="margin-bottom: 20px;">
-					<table class="table table-hover" ng-show="sidebar.show">
+				<div class="row" ng-show="tableCurrent.show">
+				
+					<div>
+						<h1 style="text-align: center;">Weather in {{weather.name}}, {{weather.sys.country}}</h1>
+					</div>
+				
+					<table class="table table-hover">
+						<tr>
+							<td>Date</td><td>{{weather.dt * 1000 | date:'dd-MM-yyyy HH:mm:ss Z'}}</td>
+						</tr>
+						
 						<tr>
 							<td>Wind</td><td>speed: {{weather.wind.speed}} ms</td>
 						</tr>
@@ -37,15 +51,53 @@
 							<td>Cloudiness</td><td>{{weather.clouds.all}}</td>
 						</tr>
 						<tr>
-							<td>Pressure</td><td>{{weather.main.pressure}}</td>
+							<td>Pressure</td><td>{{weather.main.pressure}} hpa</td>
 						</tr>
 						<tr>
-							<td>Humidity</td><td>{{weather.main.humidity}}</td>
+							<td>Humidity</td><td>{{weather.main.humidity}}%</td>
 						</tr>
 						<tr>
-							<td>Temperature(current)</td><td>{{weather.main.temp}} K</td>
+							<td>Temperature(current)</td><td>{{(weather.main.temp - 273.15).toFixed(2)}} &deg;C</td>
 						</tr>
 					
+					</table>
+				</div>
+				
+				<div class="row" ng-show="tableForecast.show">
+					
+					<div>
+						<h1 style="text-align: center;">Weather in {{city.name}}, {{city.country}}</h1>
+					</div>
+					
+					<table class="table table-hover" ng-repeat="weather in weathers">
+						
+						<tr>
+							<td>Date</td><td>{{weather.city.country}} {{weather.dt * 1000 | date:'dd-MM-yyyy'}}</td>
+						</tr>
+						<tr>
+							<td>Temperature(morning)</td><td>{{weather.temp.morn}} &deg;C</td>
+						</tr>
+						<tr>
+							<td>Temperature(day)</td><td>{{weather.temp.day}} &deg;C</td>
+						</tr>
+						<tr>
+							<td>Temperature(evening)</td><td>{{weather.temp.eve}} &deg;C</td>
+						</tr>
+						<tr>
+							<td>Temperature(night)</td><td>{{weather.temp.night}} &deg;C</td>
+						</tr>
+						<tr>
+							<td>Pressure</td><td>{{weather.pressure}} hpa</td>
+						</tr>
+						<tr>
+							<td>Humidity</td><td>{{weather.humidity}}%</td>
+						</tr>
+						<tr>
+							<td>Wind</td><td>speed: {{weather.speed}} ms</td>
+						</tr>
+						<tr>
+							<td>Cloudiness</td><td>{{weather.clouds}}</td>
+						</tr>
 					</table>
 				</div>
 			</div>

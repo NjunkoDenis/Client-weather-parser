@@ -17,20 +17,78 @@ weatherApp.controller('cityController', function CityController($scope, $http){
 
 weatherApp.controller('weatherController', function weatherController($scope, $http){
 	
-	$scope.getCurrentWeather = function(name){
+	$scope.getWeather = function(name, weatherType){
 		
-		if(name != ''){
+		var request;
 		
-			$http.get('http://api.openweathermap.org/data/2.5/weather?q='+ name +'&appid=5121dc958a0d08109bbec25ecdc2029b').success(function(data){
-					
-					$scope.sidebar = {
-						show: true
-					};
-					
+		if(weatherType == "current"){
+			
+			if(name != ''){
+			
+				request = 'http://api.openweathermap.org/data/2.5/weather?q='+ name +'&appid=5121dc958a0d08109bbec25ecdc2029b';
+				
+				$scope.tableForecast = {
+		
+					show: false
+		
+				};
+				
+				$scope.tableCurrent = {
+		
+					show: true
+		
+				};
+				
+				$http.get(request).success(function(data){
+				
 					$scope.weather = data;
+				
+				});
+			}
+			else{
+				$scope.tableForecast = {
+		
+					show: false
+		
+				};
+				
+				$scope.tableCurrent = {
+		
+					show: false
+		
+				};
+			}
+		}
+		else{
+			
+			request = 'http://api.openweathermap.org/data/2.5/forecast/daily?q='+ name +'&mode=json&units=metric&cnt=7&appid=5121dc958a0d08109bbec25ecdc2029b';
+			
+			$scope.tableCurrent = {
+	
+				show: false
+	
+			};
+			
+			$scope.tableForecast = {
+	
+				show: true
+	
+			};
+			
+			$http.get(request).success(function(data){
+			
+				$scope.city = data.city;
+				
+				console.log(data.list);
+				
+				$scope.weathers = data.list;
 					
 			});
+			
 		}
+		
+		
+		
 	}
 	
 });
